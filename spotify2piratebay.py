@@ -123,10 +123,11 @@ class PlaylistDownloader(threading.Thread):
 
         torrentfile = open('torrents.txt', 'w')
         rarefile = codecs.open('rare_albums.txt', 'w', 'utf-8')
+        album_index = 1
         for album in album_names:
             # Make sure the user knows which album we're talking about
             print
-            print '--', album
+            print '--', album, '(%d/%d)' % (album_index, len(album_names))
 
             torrents = self.get_torrents(album)
 
@@ -198,6 +199,8 @@ class PlaylistDownloader(threading.Thread):
 
             # Flush to disk in case of interruption
             torrentfile.flush()
+
+            album_index += 1
 
         torrentfile.close()
         rarefile.close()
