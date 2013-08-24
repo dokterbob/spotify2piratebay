@@ -45,8 +45,7 @@ def pirate_search(term, category=0, sortorder=99):
 
             torrents.append(torrent)
     except IndexError:
-        # Probably some weird parse error - try again!
-        torrents = pirate_search(term, category, sortorder)
+        logger.exception('Error parsing search result.')
 
     return torrents
 
