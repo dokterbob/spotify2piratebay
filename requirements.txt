@@ -1,3 +1,2 @@
 pyspotify
-piratebay
 lxml

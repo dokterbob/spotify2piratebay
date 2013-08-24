@@ -1,19 +1,50 @@
 #!/usr/bin/env python
 
-import argparse, sys, logging, getpass, threading, codecs
+import argparse, sys, logging, getpass, threading, codecs, urllib
+
+from collections import OrderedDict
+
+from lxml import html
 
 from spotify.manager import (
     SpotifySessionManager, SpotifyContainerManager, SpotifyPlaylistManager
 )
 
-import piratebay.internet, piratebay.constants
-
+from utils import parse_url
 
 # Default logger
 logger = logging.getLogger('spotify2piratebay')
 
 # Threading humbug
 container_loaded = threading.Event()
+
+def pirate_search(term, category):
+    quoted_term = urllib.quote(term)
+
+    url = 'https://thepiratebay.sx/search/%s/0/99/%d' % (quoted_term, category)
+
+    page = parse_url(url)
+    results = page.xpath('//*[@id="searchResult"]/tr')
+
+    if not results:
+        logger.warning('No torrent found for %s', term)
+        logger.debug(html.tostring(page.body))
+
+    torrents = []
+
+    for result in results:
+        torrent = {
+            'name': result.xpath('td/div[@class="detName"]/a/text()')[0],
+            'magnet_url': result.xpath('td/a')[0].attrib['href'],
+            'detail_url': result.xpath('td/div[@class="detName"]/a')[0].attrib['href']
+        }
+
+        logger.debug(torrent)
+
+        torrents.append(torrent)
+
+    return torrents
+
 
 class PlaylistDownloader(threading.Thread):
     def __init__(self, session_manager):
@@ -57,21 +88,11 @@ class PlaylistDownloader(threading.Thread):
 
     def get_torrents(self, album_name):
         """ Get torrents for album name. """
-        page = piratebay.internet.search_main(
-            term=album_name,
-            category=piratebay.constants.categories["audio"]["music"]
-        )
+        logger.info('Searching for %s', album_name)
 
-        torrents = set()
-        for result in page.all():
-            torrents.add({
-                'name': result['name'],
-                'info_url': result['torrent-info-url'],
-                'magnet_url': result['magnet_url']
-            })
+        torrents = pirate_search(album_name, 101)
 
-        print torrents
-
+        return torrents
 
     def run(self):
         container_loaded.wait()
@@ -98,8 +119,19 @@ class PlaylistDownloader(threading.Thread):
         #     storefile.write(u'%s\n' % album)
         # storefile.close()
 
+        torrentfile = open('torrents.txt', 'w')
         for album in album_names:
             torrents = self.get_torrents(album)
+
+            if len(torrents) == 1:
+                logger.info(
+                    'Found %s, writing to file.',
+                    torrents[0]['name']
+                )
+                torrentfile.write('%s\n' % torrents[0]['magnet_url'])
+
+        torrentfile.close()
+
 
 
 class PlaylistManager(SpotifyPlaylistManager):
