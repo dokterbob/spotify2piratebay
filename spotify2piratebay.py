@@ -24,24 +24,29 @@ def pirate_search(term, category=0, sortorder=99):
     )
 
     page = parse_url(url)
-    results = page.xpath('//*[@id="searchResult"]/tr')
 
-    if not results:
-        logger.warning('No torrent found for %s', term)
-        logger.debug(html.tostring(page.body))
+    try:
+        results = page.xpath('//*[@id="searchResult"]/tr')
 
-    torrents = []
+        if not results:
+            logger.warning('No torrent found for %s', term)
+            logger.debug(html.tostring(page.body))
 
-    for result in results:
-        torrent = {
-            'name': result.xpath('td/div[@class="detName"]/a/text()')[0],
-            'magnet_url': result.xpath('td/a')[0].attrib['href'],
-            'detail_url': result.xpath('td/div[@class="detName"]/a')[0].attrib['href']
-        }
+        torrents = []
 
-        logger.debug(torrent)
+        for result in results:
+            torrent = {
+                'name': result.xpath('td/div[@class="detName"]/a/text()')[0],
+                'magnet_url': result.xpath('td/a')[0].attrib['href'],
+                'detail_url': result.xpath('td/div[@class="detName"]/a')[0].attrib['href']
+            }
 
-        torrents.append(torrent)
+            logger.debug(torrent)
+
+            torrents.append(torrent)
+    except IndexError:
+        # Probably some weird parse error - try again!
+        torrents = pirate_search(term, category, sortorder)
 
     return torrents
 
