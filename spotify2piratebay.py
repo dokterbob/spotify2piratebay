@@ -37,11 +37,14 @@ class PlaylistDownloader(threading.Thread):
 
         return tracks
 
-    def get_albums(self, tracks):
+    def get_album_names(self, tracks):
         albums = set()
 
         for track in tracks:
-            albums.add(track.album())
+            album = track.album()
+            album_name = u'%s %s' % (album.artist().name(), album.name())
+            logger.debug('Adding album %s', album_name)
+            albums.add(album_name)
 
         return albums
 
@@ -58,8 +61,8 @@ class PlaylistDownloader(threading.Thread):
         logger.info('Found %d tracks', len(tracks))
 
         # Get albums
-        albums = self.get_albums(tracks)
-        logger.info('Found %d albums', len(albums))
+        album_names = self.get_album_names(tracks)
+        logger.info('Found %d album names', len(album_names))
 
         # Disconnect
         self.session_manager.disconnect()
