@@ -203,7 +203,7 @@ class PlaylistDownloader(threading.Thread):
             # Flush to disk in case of interruption
             torrentfile.flush()
 
-            album_index += 1
+        album_index += 1
 
         torrentfile.close()
         rarefile.close()
