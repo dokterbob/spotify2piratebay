@@ -179,7 +179,7 @@ class PlaylistDownloader(threading.Thread):
                             if result.strip() == '':
                                 result = 0
 
-                    torrent = torrents[result-1]
+                    torrent = torrents[result]
 
             else:
                 logger.info('Logging rare album.')
