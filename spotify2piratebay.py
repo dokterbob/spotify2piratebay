@@ -19,7 +19,7 @@ logger = logging.getLogger('spotify2piratebay')
 container_loaded = threading.Event()
 
 def pirate_search(term, category=0, sortorder=99):
-    quoted_term = urllib.quote(term)
+    quoted_term = urllib.quote(term.encode('utf8'))
 
     url = 'https://thepiratebay.sx/search/%s/0/%d/%d' % (
         quoted_term, sortorder, category
