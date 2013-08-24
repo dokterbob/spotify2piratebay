@@ -118,13 +118,13 @@ class PlaylistDownloader(threading.Thread):
         self.session_manager.disconnect()
 
         # Save to file just to be sure
-        # storefile = codecs.open('all_albums.txt', 'w', 'utf-8')
+        # storefile = codecs.open('all_albums.txt', 'a', 'utf-8')
         # for album in album_names:
         #     storefile.write(u'%s\n' % album)
         # storefile.close()
 
-        torrentfile = open('torrents.txt', 'w')
-        rarefile = codecs.open('rare_albums.txt', 'w', 'utf-8')
+        torrentfile = open('torrents.txt', 'a')
+        rarefile = codecs.open('rare_albums.txt', 'a', 'utf-8')
         album_index = 1
 
         # Create list for indexing and sorting
