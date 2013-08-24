@@ -13,7 +13,6 @@ logger = logging.getLogger('spotify2piratebay')
 # Threading humbug
 container_loaded = threading.Event()
 
-
 class PlaylistDownloader(threading.Thread):
     def __init__(self, session_manager):
         super(PlaylistDownloader, self).__init__()
@@ -42,9 +41,15 @@ class PlaylistDownloader(threading.Thread):
 
         for track in tracks:
             album = track.album()
+
+            # Sometimes, queries fuck up. Maybe API throttling?
+            assert album, 'No album. Try again.'
             album_name = u'%s %s' % (album.artist().name(), album.name())
-            logger.debug('Adding album %s', album_name)
-            albums.add(album_name)
+
+            # Check if album is not in fact, empty (i.e. filled w spaces)
+            if album_name.strip():
+                logger.debug('Adding album %s', album_name)
+                albums.add(album_name)
 
         return albums
 
@@ -155,6 +160,8 @@ def main(argv=None):
 
     session_m = SessionManager(args.username, password, True)
     session_m.connect()
+
+    print 'Disconnected'
 
 
 if __name__ == "__main__":
