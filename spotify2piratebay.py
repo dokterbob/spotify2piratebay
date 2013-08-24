@@ -123,12 +123,50 @@ class PlaylistDownloader(threading.Thread):
         for album in album_names:
             torrents = self.get_torrents(album)
 
-            if len(torrents) == 1:
-                logger.info(
-                    'Found %s, writing to file.',
-                    torrents[0]['name']
-                )
-                torrentfile.write('%s\n' % torrents[0]['magnet_url'])
+            if not torrents:
+                logger.info('No torrents found.')
+
+                continue
+
+            elif len(torrents) == 1:
+                torrent = torrents[0]
+
+            else:
+                # More than one, offer choice
+                assert len(torrents) > 1
+                print 'Multiple torrents found:'
+
+                index = 0
+                for torrent in torrents:
+                    print index, torrent['name'], torrent['detail_url']
+
+                    index += 1
+
+                result = None
+                while not isinstance(result, int):
+                    result = raw_input("Which will it be? ")
+
+                    # Ugly validation
+                    try:
+                        result = int(result)
+
+                        if result > len(torrents) - 1:
+                            print 'Invalid value', result
+                            result = None
+
+                    except ValueError:
+                        pass
+
+                torrent = torrents[result]
+
+            logger.info(
+                'Found %s, writing to file.',
+                torrent['name']
+            )
+            torrentfile.write('%s\n' % torrent['magnet_url'])
+
+            # Flush to disk in case of interruption
+            torrentfile.flush()
 
         torrentfile.close()
 
