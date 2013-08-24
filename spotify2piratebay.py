@@ -20,30 +20,49 @@ class PlaylistDownloader(threading.Thread):
 
         self.session_manager = session_manager
 
+    def get_playlists(self, container):
+        playlists = []
+        for playlist in container:
+            if playlist.type() == 'playlist':
+                playlists.append(playlist)
+
+        return playlists
+
+    def get_tracks(self, playlists):
+        tracks = set()
+
+        for playlist in playlists:
+            for track in playlist:
+                tracks.add(track)
+
+        return tracks
+
+    def get_albums(self, tracks):
+        albums = set()
+
+        for track in tracks:
+            albums.add(track.album())
+
+        return albums
+
     def run(self):
         container_loaded.wait()
         container_loaded.clear()
 
-        # Disconnect
-        self.session_manager.disconnect()
-
-        playlists = []
-        for playlist in self.session_manager.ctr:
-            if playlist.type() == 'playlist':
-                playlists.append(playlist)
-
+        # Get playlists
+        playlists = self.get_playlists(self.session_manager.ctr)
         logger.info('Found %d playlists', len(playlists))
 
+        # Get tracks
+        tracks = self.get_tracks(playlists)
+        logger.info('Found %d tracks', len(tracks))
 
-    def get_playlists(self):
-        playlists = []
+        # Get albums
+        albums = self.get_albums(tracks)
+        logger.info('Found %d albums', len(albums))
 
-        for obj in self:
-            logger.debug('Adding playlist %s', obj)
-
-            playlists.append(obj)
-
-        return playlists
+        # Disconnect
+        self.session_manager.disconnect()
 
 
 class PlaylistManager(SpotifyPlaylistManager):
