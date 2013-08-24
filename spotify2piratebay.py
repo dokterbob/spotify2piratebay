@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import argparse, sys, logging, getpass, threading
+import argparse, sys, logging, getpass, threading, codecs
 
 from spotify.manager import (
     SpotifySessionManager, SpotifyContainerManager, SpotifyPlaylistManager
@@ -62,7 +62,13 @@ class PlaylistDownloader(threading.Thread):
 
         # Get albums
         album_names = self.get_album_names(tracks)
-        logger.info('Found %d album names', len(album_names))
+        logger.info('Found %d unique album names', len(album_names))
+
+        # Save to file just to be sure
+        # storefile = codecs.open('albums.txt', 'w', 'utf-8')
+        # for album in album_names:
+        #     storefile.write(u'%s\n' % album)
+        # storefile.close()
 
         # Disconnect
         self.session_manager.disconnect()
