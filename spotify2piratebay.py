@@ -195,7 +195,7 @@ class PlaylistDownloader(threading.Thread):
                                 # Bye-bye
                                 return
 
-                            elif result > len(torrents) - 1 or result < -1:
+                            elif result > len(torrents) or result < -1:
                                 print 'Invalid value', result
                                 result = None
 
@@ -204,7 +204,7 @@ class PlaylistDownloader(threading.Thread):
                             if result.strip() == '':
                                 result = 0
 
-                    torrent = torrents[result]
+                    torrent = torrents[result - 1]
 
             else:
                 logger.info('Logging rare album.')
