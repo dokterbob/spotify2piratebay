@@ -127,7 +127,7 @@ class PlaylistDownloader(threading.Thread):
         torrentfile = open('torrents.txt', 'w')
         rarefile = codecs.open('rare_albums.txt', 'w', 'utf-8')
         album_index = 1
-        for album in album_names:
+        for album in album_names[self.session_manager:]:
             # Make sure the user knows which album we're talking about
             print
             print '--', album, '(%d/%d)' % (album_index, len(album_names))
@@ -241,6 +241,8 @@ class ContainerManager(SpotifyContainerManager):
 
 class SessionManager(SpotifySessionManager):
     def __init__(self, *args, **kwargs):
+        self.offset = kwargs.pop('offset', 0)
+
         super(SessionManager, self).__init__(*args, **kwargs)
         self.container_manager = ContainerManager()
         self.playlist_manager = PlaylistManager()
@@ -270,6 +272,7 @@ def main(argv=None):
     parser.add_argument('username', type=str)
     parser.add_argument('password', type=str, nargs='?')
     parser.add_argument('--logging', '-l', help='Log level.', type=str, default='info', choices=('debug', 'info', 'warn', 'error'))
+    parser.add_argument('--offset', type=int)
 
     args = parser.parse_args()
 
@@ -288,7 +291,7 @@ def main(argv=None):
         print 'Please enter your Spotify password below.'
         password = getpass.getpass()
 
-    session_m = SessionManager(args.username, password, True)
+    session_m = SessionManager(args.username, password, True, offset=args.offset)
     session_m.connect()
 
 
