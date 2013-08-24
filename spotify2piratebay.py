@@ -217,7 +217,7 @@ class PlaylistDownloader(threading.Thread):
                 continue
 
             logger.info(
-                'Found %s, writing magnet link to file.',
+                'Writing magnet link to file for \'%s\'.',
                 torrent['name']
             )
             torrentfile.write('%s\n' % torrent['magnet_url'])
