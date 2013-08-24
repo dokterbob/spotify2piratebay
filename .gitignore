@@ -21,3 +21,10 @@ pip-log.txt
 .coverage
 .tox
 cover
+
+# Project specific
+tmp
+spotify_appkey.key
+albums.txt
+rare_albums.txt
+torrents.txt
