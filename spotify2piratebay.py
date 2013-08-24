@@ -122,11 +122,15 @@ class PlaylistDownloader(threading.Thread):
         # storefile.close()
 
         torrentfile = open('torrents.txt', 'w')
+        rarefile = codecs.open('rare_albums.txt', 'w', 'utf-8')
         for album in album_names:
             torrents = self.get_torrents(album)
 
             if not torrents:
-                logger.info('No torrents found.')
+                logger.info('Logging rare album.')
+
+                rarefile.write(u'%s\n' % album)
+                rarefile.flush()
 
                 continue
 
@@ -171,7 +175,7 @@ class PlaylistDownloader(threading.Thread):
             torrentfile.flush()
 
         torrentfile.close()
-
+        rarefile.close()
 
 
 class PlaylistManager(SpotifyPlaylistManager):
