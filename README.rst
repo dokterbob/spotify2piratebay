@@ -22,4 +22,11 @@ as iTunes right now. Sorry. **
 Usage.
 ------
 
-1. Download and install `libspotify`
+1. Download and install `libspotify`.
+2. Setup a Spotify API key.
+3. `pip install -r requirements.txt`
+4. Run the darn program!
+
+TODO
+----
+MUCH! This was more like a dirty hack than anything else. Pull req's welcome.
