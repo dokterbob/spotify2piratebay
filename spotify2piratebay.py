@@ -2,8 +2,6 @@
 
 import argparse, sys, logging, getpass, threading, codecs, urllib
 
-from collections import OrderedDict
-
 from lxml import html
 
 from spotify.manager import (
