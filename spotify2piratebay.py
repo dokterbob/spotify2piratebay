@@ -256,8 +256,6 @@ def main(argv=None):
     session_m = SessionManager(args.username, password, True)
     session_m.connect()
 
-    print 'Disconnected'
-
 
 if __name__ == "__main__":
     sys.exit(main())
