@@ -18,10 +18,12 @@ logger = logging.getLogger('spotify2piratebay')
 # Threading humbug
 container_loaded = threading.Event()
 
-def pirate_search(term, category):
+def pirate_search(term, category=0, sortorder=99):
     quoted_term = urllib.quote(term)
 
-    url = 'https://thepiratebay.sx/search/%s/0/99/%d' % (quoted_term, category)
+    url = 'https://thepiratebay.sx/search/%s/0/%d/%d' % (
+        quoted_term, sortorder, category
+    )
 
     page = parse_url(url)
     results = page.xpath('//*[@id="searchResult"]/tr')
@@ -90,7 +92,7 @@ class PlaylistDownloader(threading.Thread):
         """ Get torrents for album name. """
         logger.info('Searching for %s', album_name)
 
-        torrents = pirate_search(album_name, 101)
+        torrents = pirate_search(album_name, category=101, sortorder=7)
 
         return torrents
 
