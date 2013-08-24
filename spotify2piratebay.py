@@ -124,9 +124,65 @@ class PlaylistDownloader(threading.Thread):
         torrentfile = open('torrents.txt', 'w')
         rarefile = codecs.open('rare_albums.txt', 'w', 'utf-8')
         for album in album_names:
+            # Make sure the user knows which album we're talking about
+            print
+            print '--', album
+
             torrents = self.get_torrents(album)
 
-            if not torrents:
+            if torrents:
+                if len(torrents) == 1:
+                    # Only one torrent, select 1'st
+                    torrent = torrents[0]
+
+                    # Query whether or not to download
+                    result = None
+                    while not result in ('', 'y', 'n'):
+                        result = raw_input('Download torrent? (y) ')
+                        result = result.strip()
+
+                    # No download, NEXT
+                    if result == 'n':
+                        logger.info('Skipping album.')
+                        continue
+
+                else:
+                    # More than one, offer choice
+                    assert len(torrents) > 1
+                    print 'Multiple torrents found for \'%s\':' % album
+
+                    index = 1
+                    print 0, 'Skip this torrent'
+                    for torrent in torrents:
+                        print index, torrent['name'], torrent['detail_url']
+
+                        index += 1
+
+
+                    result = None
+                    while not isinstance(result, int):
+                        result = raw_input("Which will it be? [1] ")
+
+                        # Ugly validation
+                        try:
+                            result = int(result)
+
+                            if result == 0:
+                                logger.info('Skipping album.')
+                                continue
+
+                            if result > len(torrents) - 1 or result < 0:
+                                print 'Invalid value', result
+                                result = None
+
+                        except ValueError:
+                            # Default to 0
+                            if result.strip() == '':
+                                result = 0
+
+                    torrent = torrents[result-1]
+
+            else:
                 logger.info('Logging rare album.')
 
                 rarefile.write(u'%s\n' % album)
@@ -134,41 +190,8 @@ class PlaylistDownloader(threading.Thread):
 
                 continue
 
-            elif len(torrents) == 1:
-                torrent = torrents[0]
-
-            else:
-                # More than one, offer choice
-                assert len(torrents) > 1
-                print 'Multiple torrents found for \'%s\':' % album
-
-                index = 0
-                for torrent in torrents:
-                    print index, torrent['name'], torrent['detail_url']
-
-                    index += 1
-
-                result = None
-                while not isinstance(result, int):
-                    result = raw_input("Which will it be? [0] ")
-
-                    # Ugly validation
-                    try:
-                        result = int(result)
-
-                        if result > len(torrents) - 1:
-                            print 'Invalid value', result
-                            result = None
-
-                    except ValueError:
-                        # Default to 0
-                        if result.strip() == '':
-                            result = 0
-
-                torrent = torrents[result]
-
             logger.info(
-                'Found %s, writing to file.',
+                'Found %s, writing magnet link to file.',
                 torrent['name']
             )
             torrentfile.write('%s\n' % torrent['magnet_url'])
