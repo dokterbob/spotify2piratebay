@@ -170,6 +170,7 @@ class PlaylistDownloader(threading.Thread):
                         print index, torrent['name'], torrent['detail_url']
 
                         index += 1
+                    print -1, 'Exit'
 
 
                     result = None
@@ -184,7 +185,17 @@ class PlaylistDownloader(threading.Thread):
                                 logger.info('Skipping album.')
                                 continue
 
-                            if result > len(torrents) - 1 or result < 0:
+                            elif result == -1:
+                                logger.info('Requested exit.')
+
+                                # Close files
+                                torrentfile.close()
+                                rarefile.close()
+
+                                # Bye-bye
+                                return
+
+                            elif result > len(torrents) - 1 or result < -1:
                                 print 'Invalid value', result
                                 result = None
 
