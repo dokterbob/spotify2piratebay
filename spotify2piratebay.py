@@ -134,6 +134,7 @@ class PlaylistDownloader(threading.Thread):
 
             torrents = self.get_torrents(album)
 
+            # Yup. This needs refactoring.
             if torrents:
                 if len(torrents) == 1:
                     # Only one torrent, select 1'st
