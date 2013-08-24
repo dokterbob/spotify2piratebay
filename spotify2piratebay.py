@@ -9,14 +9,18 @@ from spotify.manager import SpotifySessionManager
 logger = logging.getLogger('spotify2piratebay')
 
 
-def get_session(username, password):
-    logger.info('Logging in as %s', username)
-    session = SpotifySessionManager(
-        username=username,
-        password=password
-    )
+class ListDownloader(SpotifySessionManager):
+    def logged_in(self, session, error):
+        if error:
+            logger.error(error)
+            return
 
-    return session
+        logger.info('Logged in.')
+
+        # Perform work
+
+        # Disconnect
+        self.disconnect()
 
 
 def main(argv=None):
@@ -42,7 +46,8 @@ def main(argv=None):
     else:
         password = getpass.getpass()
 
-    session = get_session(args.username, password)
+    session_m = ListDownloader(args.username, password, True)
+    session_m.connect()
 
 
 if __name__ == "__main__":
