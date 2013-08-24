@@ -25,6 +25,6 @@ cover
 # Project specific
 tmp
 spotify_appkey.key
-albums.txt
+all_albums.txt
 rare_albums.txt
 torrents.txt

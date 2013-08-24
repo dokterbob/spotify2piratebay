@@ -116,7 +116,7 @@ class PlaylistDownloader(threading.Thread):
         self.session_manager.disconnect()
 
         # Save to file just to be sure
-        # storefile = codecs.open('albums.txt', 'w', 'utf-8')
+        # storefile = codecs.open('all_albums.txt', 'w', 'utf-8')
         # for album in album_names:
         #     storefile.write(u'%s\n' % album)
         # storefile.close()
