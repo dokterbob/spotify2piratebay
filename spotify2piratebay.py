@@ -140,7 +140,7 @@ class PlaylistDownloader(threading.Thread):
             else:
                 # More than one, offer choice
                 assert len(torrents) > 1
-                print 'Multiple torrents found:'
+                print 'Multiple torrents found for \'%s\':' % album
 
                 index = 0
                 for torrent in torrents:
@@ -150,7 +150,7 @@ class PlaylistDownloader(threading.Thread):
 
                 result = None
                 while not isinstance(result, int):
-                    result = raw_input("Which will it be? ")
+                    result = raw_input("Which will it be? [0] ")
 
                     # Ugly validation
                     try:
@@ -161,7 +161,9 @@ class PlaylistDownloader(threading.Thread):
                             result = None
 
                     except ValueError:
-                        pass
+                        # Default to 0
+                        if result.strip() == '':
+                            result = 0
 
                 torrent = torrents[result]
 
