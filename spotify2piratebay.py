@@ -117,12 +117,6 @@ class PlaylistDownloader(threading.Thread):
         # Disconnect
         self.session_manager.disconnect()
 
-        # Save to file just to be sure
-        # storefile = codecs.open('all_albums.txt', 'a', 'utf-8')
-        # for album in album_names:
-        #     storefile.write(u'%s\n' % album)
-        # storefile.close()
-
         torrentfile = open('torrents.txt', 'a')
         rarefile = codecs.open('rare_albums.txt', 'a', 'utf-8')
         album_index = 1
@@ -130,6 +124,12 @@ class PlaylistDownloader(threading.Thread):
         # Create list for indexing and sorting
         album_names = list(album_names)
         album_names.sort()
+
+        # Save to file just to be sure
+        storefile = codecs.open('all_albums.txt', 'a', 'utf-8')
+        for album in album_names:
+            storefile.write(u'%s\n' % album)
+        storefile.close()
 
         # Take offset from command line
         album_names = album_names[self.session_manager.offset:]
