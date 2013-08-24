@@ -10,6 +10,10 @@ logger = logging.getLogger('spotify2piratebay')
 
 
 class ListDownloader(SpotifySessionManager):
+    def get_playlists(self):
+        print self.session
+
+
     def logged_in(self, session, error):
         if error:
             logger.error(error)
@@ -18,6 +22,7 @@ class ListDownloader(SpotifySessionManager):
         logger.info('Logged in.')
 
         # Perform work
+        playlists = self.get_playlists()
 
         # Disconnect
         self.disconnect()
@@ -34,16 +39,19 @@ def main(argv=None):
 
     args = parser.parse_args()
 
-    # Set log level
+    # Setup logging
+    console = logging.StreamHandler()
+    logger.addHandler(console)
+
     numeric_level = getattr(logging, args.logging.upper())
     logger.setLevel(numeric_level)
 
 
     # Make sure we have a password
-    print 'Please enter your Spotify password below.'
     if args.password:
         password = args.password
     else:
+        print 'Please enter your Spotify password below.'
         password = getpass.getpass()
 
     session_m = ListDownloader(args.username, password, True)
