@@ -6,6 +6,8 @@ from spotify.manager import (
     SpotifySessionManager, SpotifyContainerManager, SpotifyPlaylistManager
 )
 
+import piratebay.internet, piratebay.constants
+
 
 # Default logger
 logger = logging.getLogger('spotify2piratebay')
@@ -53,6 +55,24 @@ class PlaylistDownloader(threading.Thread):
 
         return albums
 
+    def get_torrents(self, album_name):
+        """ Get torrents for album name. """
+        page = piratebay.internet.search_main(
+            term=album_name,
+            category=piratebay.constants.categories["audio"]["music"]
+        )
+
+        torrents = set()
+        for result in page.all():
+            torrents.add({
+                'name': result['name'],
+                'info_url': result['torrent-info-url'],
+                'magnet_url': result['magnet_url']
+            })
+
+        print torrents
+
+
     def run(self):
         container_loaded.wait()
         container_loaded.clear()
@@ -69,14 +89,17 @@ class PlaylistDownloader(threading.Thread):
         album_names = self.get_album_names(tracks)
         logger.info('Found %d unique album names', len(album_names))
 
+        # Disconnect
+        self.session_manager.disconnect()
+
         # Save to file just to be sure
         # storefile = codecs.open('albums.txt', 'w', 'utf-8')
         # for album in album_names:
         #     storefile.write(u'%s\n' % album)
         # storefile.close()
 
-        # Disconnect
-        self.session_manager.disconnect()
+        for album in album_names:
+            torrents = self.get_torrents(album)
 
 
 class PlaylistManager(SpotifyPlaylistManager):
