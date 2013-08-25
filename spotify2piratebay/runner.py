@@ -260,6 +260,11 @@ class ContainerManager(SpotifyContainerManager):
 
 
 class SessionManager(SpotifySessionManager):
+    # Set application key path to local directory
+    appkey_file = os.path.join(
+        os.path.dirname(__file__), 'spotify_appkey.key'
+    )
+
     def __init__(self, *args, **kwargs):
         self.offset = kwargs.pop('offset', 0)
 
