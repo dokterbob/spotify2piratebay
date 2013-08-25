@@ -8,7 +8,7 @@ from spotify.manager import (
     SpotifySessionManager, SpotifyContainerManager, SpotifyPlaylistManager
 )
 
-from utils import parse_url
+from .utils import parse_url
 
 # Default logger
 logger = logging.getLogger('spotify2piratebay')

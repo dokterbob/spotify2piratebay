@@ -23,16 +23,18 @@ setup(
     url='http://github.com/dokterbob/spotify2piratebay/',
     packages=find_packages(),
     include_package_data=True,
-    classifiers=['Development Status :: 3 - Alpha',
-                 'Framework :: Django',
-                 'Intended Audience :: Developers',
-                 'License :: Public Domain',
-                 'Operating System :: OS Independent',
-                 'Programming Language :: Python',
-                 'Topic :: Utilities'],
-    # entry_points={
-    #     'console_scripts': [
-    #         'spotify2piratebay = spotify2piratebay.runner:main',
-    #     ],
-    # },
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: Console',
+        'Intended Audience :: Developers',
+        'License :: Public Domain',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Topic :: Utilities'
+    ],
+    entry_points={
+        'console_scripts': [
+            'spotify2piratebay = spotify2piratebay.runner:main',
+        ],
+    },
 )
