@@ -22,7 +22,9 @@ as iTunes right now. Sorry.**
 Usage.
 ------
 
-1. Download and install `libspotify`.
+1. Download and install `libspotify <https://developer.spotify.com/technologies/libspotify/>`_. On a Mac with homebrew, simply run::
+
+       brew install libspotify
 
 2. Install `spotify2piratebay`::
 
